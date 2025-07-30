@@ -8,3 +8,9 @@ variable "service_name" {
 variable "image_name" {
   description = "Container image full path (e.g. gcr.io/project-id/image-name:tag)"
 }
+
+variable "gcp_sa_key" {
+  description = "GCP credentials in JSON format"
+  type        = string
+  sensitive   = true
+}
