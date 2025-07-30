@@ -1,0 +1,62 @@
+name: "Terraform Cloud Run Deployment"
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.github/workflows/terraform.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.tf'
+      - '**.tfvars'
+      - '.github/workflows/terraform.yml'
+
+env:
+  TF_VERSION: "1.8.2"
+  GOOGLE_PROJECT_ID: "lmd-development-467415"
+  GOOGLE_REGION: "asia-southeast2"
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: ${{ env.TF_VERSION }}
+
+    - name: Setup Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.GOOGLE_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Terraform Format Check
+      run: terraform fmt -check -recursive
+      
+    - name: Terraform Init
+      run: terraform init
+      
+    - name: Terraform Validate
+      run: terraform validate
+      
+    - name: Terraform Plan
+      run: terraform plan -out=tfplan
+      if: github.event_name == 'pull_request'
+      
+    - name: Terraform Apply
+      run: terraform apply -auto-approve tfplan
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      
+    - name: Terraform Apply (Manual)
+      run: terraform apply -auto-approve
+      if: github.ref == 'refs/heads/develop' && github.event_name == 'push' 
