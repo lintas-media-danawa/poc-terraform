@@ -50,15 +50,21 @@ jobs:
       run: terraform validate
     
     - name: Terraform Plan & Apply (main)
+      env:
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
-        terraform plan -out=tfplan
-        terraform apply -auto-approve tfplan
+        terraform plan -out=tfplan -var="gcp_credentials=$GCP_CREDENTIALS"
+        terraform apply -auto-approve tfplan -var="gcp_credentials=$GCP_CREDENTIALS"
 
     - name: Terraform Apply (develop)
+      env:
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: terraform apply -auto-approve -var="gcp_credentials=$GCP_CREDENTIALS"
       
     - name: Terraform Apply (Manual)
-      run: terraform apply -auto-approve
+      env:
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+      run: terraform apply -auto-approve -var="gcp_credentials=$GCP_CREDENTIALS"
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push' 
