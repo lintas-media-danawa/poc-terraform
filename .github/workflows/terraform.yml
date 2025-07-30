@@ -54,7 +54,7 @@ jobs:
     
     - name: Terraform Plan & Apply (main)
       env:
-        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        GCP_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: |
         terraform plan -out=tfplan -var="gcp_credentials=$GCP_CREDENTIALS"
@@ -62,12 +62,12 @@ jobs:
 
     - name: Terraform Apply (develop)
       env:
-        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        GCP_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
       run: terraform apply -auto-approve -var="gcp_sa_key=$=$GCP_CREDENTIALS" -var="image_name=$=$IMAGE_NAME" -var="project_id=$=$PROJECT_ID"
       
     - name: Terraform Apply (Manual)
       env:
-        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+        GCP_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       run: terraform apply -auto-approve -var="gcp_sa_key=$=$GCP_CREDENTIALS" -var="image_name=$=$IMAGE_NAME" -var="project_id=$=$PROJECT_ID"
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push' 
