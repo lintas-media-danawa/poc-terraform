@@ -64,7 +64,7 @@ jobs:
       env:
         GCP_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
       if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-      run: terraform apply -auto-approve -var="gcp_sa_key=$GCP_CREDENTIALS" -var="image_name=$IMAGE_NAME" -var="project_id=$PROJECT_ID"
+      run: terraform apply -var="gcp_sa_key=$GCP_CREDENTIALS" -var="image_name=$IMAGE_NAME" -var="project_id=$PROJECT_ID"
       
     - name: Terraform Apply (Manual)
       env:
