@@ -18,7 +18,7 @@ env:
   TF_VERSION: "1.8.2"
   GOOGLE_PROJECT_ID: "lmd-development-467415"
   GOOGLE_REGION: "asia-southeast2"
-  GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+  GCP_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
   PROJECT_ID: "lmd-development-467415"
   IMAGE_NAME: "asia-southeast2-docker.pkg.dev/lmd-development-467415/test-crud-repository/flask-crud:v1"
 
